@@ -6,5 +6,5 @@ public class Card
     public int NumberOfCard { get; set; }
     public SpecialCard SpecialType { get; set; }
 
-   // public string RandomCentreCard { get; set; }    //перша карта
+
 }
