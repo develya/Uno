@@ -11,4 +11,5 @@ public class Card
     public List<Card> DeckOfCards { get; set; } //колода карт
     public List<Card> DiscardStack { get; set; }    // типу отбой
     public List<Card> OwnStack { get; set; }   //власні карти
+    //
 }
