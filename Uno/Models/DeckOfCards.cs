@@ -4,6 +4,12 @@ namespace Uno.Models;
 
 public class DeckOfCards
 {
-    public List<Card> Cards { get; set; }  //відбій типу
+    private List<Card> _cards { get; set; }
 
+    public DeckOfCards(List<Card> cards)
+    {
+         _cards = cards;
+    }
+
+    public Card? ReturnOneCard() => _cards.FirstOrDefault();
 }
