@@ -4,24 +4,27 @@ namespace Uno.Methods;
 
 public class CardGenerator
 {
-    private List<Card> _cards { get; set; }
-
-    public CardGenerator(List<Card> cards)
-    {
-        _cards = cards;
-    }
-
     public List<Card> GenerateCards()
     {
+        var cards = new List<Card>();
 
         foreach (Color color in Enum.GetValues<Color>())
         {
-            for (int i = 0; i <= 9; i++)
-            {
-                _cards.Add(new Card { Color = color, NumberOfCard = i });
-            }
+            CreateSimpleCards(cards, color);
         }
 
-        return _cards;
+        return cards;
+    }
+
+    private void CreateSimpleCards(List<Card> cards, Color color)
+    {
+        for (int i = 0; i <= 9; i++)
+        {
+            var card = new Card();
+
+            card.Color = color;
+            card.NumberOfCard = i;
+            cards.Add(card);
+        }
     }
 }

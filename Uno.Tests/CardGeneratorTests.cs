@@ -8,7 +8,7 @@ public class CardGeneratorTests
     [Fact]
     public void Generator_ShouldCreateCardsFrom0To9()
     {
-        var generator = new CardGenerator(new List<Card>());
+        var generator = new CardGenerator();
 
         var cards = generator.GenerateCards();
 
