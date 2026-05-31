@@ -19,4 +19,19 @@ public class DeckOfCardsTests
         var card = desk.ReturnOneCard();
         Assert.NotNull(card);
     }
+
+    [Fact]
+
+    public void Deck_ShouldReturnSevenCards()
+    {
+        var cards = new List<Card>();
+
+        for (int i = 0; i < 10; i++)
+        {
+             cards.Add(new Card());
+        }
+        var desk = new DeckOfCards(cards);
+        var result  = desk.ReturnSevenCards();
+        Assert.Equal(7, result.Count);
+    }
 }

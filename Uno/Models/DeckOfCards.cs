@@ -12,4 +12,16 @@ public class DeckOfCards
     }
 
     public Card? ReturnOneCard() => _cards.FirstOrDefault();
+
+    public List<Card> ReturnSevenCards()
+    {
+        var cards = new List<Card>();
+
+        for (int i = 0; i < 7; i++)
+        {
+            cards.Add(_cards[i]);
+
+        }
+        return cards;
+    }
 }
