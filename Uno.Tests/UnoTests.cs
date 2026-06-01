@@ -17,4 +17,22 @@ public class UnoTests
         Assert.Equal(7, players[1].Cards.Count);
 
     }
+
+    [Fact]
+    public void PlayTurn_ShouldPutCard_WhenMoveAllowed()
+    {
+        var card = new Card { Color = Color.Blue, NumberOfCard = 1 };
+        var player = new Player { Cards = new List<Card> { card } };
+        var game = new Models.Uno
+        {
+            Players = new List<Player> { player },
+            DiscardStack = new DiscardStack(
+                new List<Card> { new Card { Color = Color.Red, NumberOfCard = 1 } })
+        };
+        var result = game.PlayTurn(player, card);
+            Assert.True(result);
+            Assert.Empty(player.Cards);
+
+    }
+
 }

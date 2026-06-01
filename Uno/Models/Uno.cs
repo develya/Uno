@@ -28,4 +28,34 @@ public class Uno
             DiscardStack.AddCard(firstCard);
         }
     }
+
+    public bool PlayTurn(Player player, Card playedCard)
+    {
+        var topCard = DiscardStack.GetTopCard();
+
+        if (topCard == null)
+        {
+            return false;
+        }
+
+        var rules = new GameRules();
+
+        bool canPlay = rules.CanPlay(playedCard, topCard);
+
+        if (!canPlay)
+        {
+            return false;
+        }
+
+        var card = player.PutCard(playedCard);
+
+        if (card == null)
+        {
+            return false;
+        }
+
+        DiscardStack.AddCard(card);
+
+        return true;
+    }
 }
