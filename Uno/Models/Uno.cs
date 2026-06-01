@@ -1,3 +1,5 @@
+using Uno.Methods;
+
 namespace Uno.Models;
 
 public class Uno
@@ -8,4 +10,22 @@ public class Uno
     public DiscardStack DiscardStack { get; set; }
     public DeckOfCards DeckOfCards { get; set; }
 
+    public void StartGame()
+    {
+        var generator = new CardGenerator();
+        var cards = generator.GenerateCards();
+        var mixer = new MixingOfCards(cards);
+        var shafled = mixer.Shuffle();
+        DeckOfCards = new DeckOfCards(shafled);
+        foreach (var player in Players)
+        {
+            player.TakeCards(DeckOfCards.ReturnSevenCards());
+        }
+        DiscardStack = new DiscardStack(new List<Card>());
+        var firstCard = DeckOfCards.ReturnOneCard();
+        if (firstCard != null)
+        {
+            DiscardStack.AddCard(firstCard);
+        }
+    }
 }

@@ -10,9 +10,10 @@ public class CardGenerator
 
         foreach (Color color in Enum.GetValues<Color>())
         {
-            CreateSimpleCards(cards, color);
+            cards.AddRange();CreateSimpleCards(cards, color);
+            cards.AddRange(CreateSpecialCards(color));
         }
-
+        cards.AddRange(CreateChangedColorCards());
         return cards;
     }
 
@@ -26,5 +27,25 @@ public class CardGenerator
             card.NumberOfCard = i;
             cards.Add(card);
         }
+    }
+
+    private List<Card> CreateSpecialCards(Color color)
+    {
+        var cards = new List<Card>();
+        cards.Add(new Card { Color = color, SpecialType = SpecialCard.Reverse });
+        cards.Add(new Card { Color = color, SpecialType = SpecialCard.SkipTurn });
+        return cards;
+    }
+
+    private List<Card> CreateChangedColorCards()
+    {
+        var cards = new List<Card>();
+        for (int i = 0; i < 4; i++)
+        {
+            cards.Add(new Card { SpecialType = SpecialCard.ChangeColor, });
+            cards.Add(new Card { SpecialType = SpecialCard.ChangeColorPlusFour, });
+            cards.Add(new Card { SpecialType = SpecialCard.PlusTwo, });
+        }
+        return cards;
     }
 }
