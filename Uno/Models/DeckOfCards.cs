@@ -4,14 +4,20 @@ namespace Uno.Models;
 
 public class DeckOfCards
 {
-    private List<Card> _cards { get; set; }
+    private Stack<Card> _cards { get; set; }
 
     public DeckOfCards(List<Card> cards)
     {
-         _cards = cards;
+        _cards = new Stack<Card>(cards);
     }
 
-    public Card? ReturnOneCard() => _cards.FirstOrDefault();
+    public Card? ReturnOneCard()
+    {
+        if (_cards.Count == 0)
+            return null;
+
+        return _cards.Pop();
+    }
 
     public List<Card> ReturnSevenCards()
     {
@@ -19,7 +25,7 @@ public class DeckOfCards
 
         for (int i = 0; i < 7; i++)
         {
-            cards.Add(_cards[i]);
+            cards.Add(_cards.Pop());
 
         }
         return cards;

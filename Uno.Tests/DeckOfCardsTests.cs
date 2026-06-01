@@ -7,16 +7,16 @@ public class DeckOfCardsTests
     [Fact]
     public void Deck_ShouldReturnNull_When_ListIsEmpty()
     {
-        var desk = new DeckOfCards(new List<Card>());
-        var card = desk.ReturnOneCard();
+        var deck = new DeckOfCards(new List<Card>());
+        var card = deck.ReturnOneCard();
         Assert.Null(card);
     }
 
     [Fact]
     public void Deck_ShouldReturnCard_When_ListIsNotEmpty()
     {
-        var desk = new DeckOfCards([new Card()]);
-        var card = desk.ReturnOneCard();
+        var deck = new DeckOfCards([new Card()]);
+        var card = deck.ReturnOneCard();
         Assert.NotNull(card);
     }
 

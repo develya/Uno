@@ -10,8 +10,10 @@ public class DiscardStackTests
     {
         var cards = new List<Card>();
         var stack = new DiscardStack(cards);
-        stack.AddCard(new Card());
-        Assert.Single(cards);
+        var card = new Card();
+        stack.AddCard(card);
+        var result = stack.GetTopCard();
+        Assert.Equal(card, result);
     }
 
     [Fact]

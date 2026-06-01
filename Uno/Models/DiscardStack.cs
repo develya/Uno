@@ -2,21 +2,23 @@ namespace Uno.Models;
 
 public class DiscardStack
 {
-    private List<Card> _cards { get; set; }
+    private Stack<Card> _cards { get; set; }
 
     public DiscardStack(List<Card> cards)
     {
-        _cards = cards;
+        _cards = new Stack<Card>(cards);
     }
 
     public void AddCard(Card card)
     {
-        _cards.Add(card);
+        _cards.Push(card);
     }
 
     public Card? GetTopCard()
     {
-        return _cards.LastOrDefault();
+        if (_cards.Count == 0)
+            return null;
+        return _cards.Peek();
     }
 
 }
