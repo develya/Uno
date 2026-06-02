@@ -34,5 +34,15 @@ public class UnoTests
             Assert.Empty(player.Cards);
 
     }
-
+    [Fact]
+    public void HasWinner_ShouldReturnTrue_WhenPlayerHasNoCards()
+    {
+        var player = new Player
+        {
+            Cards = new List<Card>()
+        };
+        var game = new Uno.Models.Uno();
+        var result = game.HasWinner(player);
+        Assert.True(result);
+    }
 }

@@ -58,4 +58,10 @@ public class Uno
 
         return true;
     }
+
+    public bool HasWinner(Player player)
+    {
+        return player.Cards.Count == 0;
+    }
+
 }
