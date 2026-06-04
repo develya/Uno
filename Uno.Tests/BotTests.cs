@@ -12,7 +12,7 @@ public class BotTests
         var bot = new Bot(player);
         var deck = new DeckOfCards(new List<Card>());
         var topCard = new Card { Color = Color.Red, NumberOfCard = 5 };
-        var result = bot.ChooseCard(topCard, deck);
+        var result = bot.ChooseCard(topCard, deck,Color.Blue);
         Assert.Equal(card, result);
         Assert.Empty(player.Cards);
     }
@@ -26,7 +26,7 @@ public class BotTests
             new List<Card> { new Card { Color = Color.Green, NumberOfCard = 9 }, }
         );
         var topCard = new Card { Color = Color.Red, NumberOfCard = 5 };
-        var result = bot.ChooseCard(topCard, deck);
+        var result = bot.ChooseCard(topCard, deck, Color.Blue);
         Assert.Null(result);
         Assert.Single(player.Cards);
     }

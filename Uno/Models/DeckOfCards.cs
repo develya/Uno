@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices.JavaScript;
 
 namespace Uno.Models;
 
@@ -25,6 +24,10 @@ public class DeckOfCards
 
         for (int i = 0; i < 7; i++)
         {
+            if (_cards.Count == 0)
+            {
+                break;
+            }
             cards.Add(_cards.Pop());
 
         }

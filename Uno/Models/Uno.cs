@@ -4,14 +4,53 @@ namespace Uno.Models;
 
 public class Uno
 {
-    public Player Player { get; set; }
-    public List<Player> Players { get; set; }
-    public List<Card> Cards { get; set; }
-    public DiscardStack DiscardStack { get; set; }
-    public DeckOfCards DeckOfCards { get; set; }
-    public bool SkipNextTurn { get; set; }
-    public Color CurrentColor { get; set; }
-    public bool IsReversed { get; set; } = false;
+    public Player Player
+    {
+        get;
+        set;
+    }
+
+    public List<Player> Players
+    {
+        get;
+        set;
+    }
+
+    public List<Card> Cards
+    {
+        get;
+        set;
+    }
+
+    public DiscardStack DiscardStack
+    {
+        get;
+        set;
+    }
+
+    public DeckOfCards DeckOfCards
+    {
+        get;
+        set;
+    }
+
+    public bool SkipNextTurn
+    {
+        get;
+        set;
+    }
+
+    public Color? CurrentColor
+    {
+        get;
+        set;
+    }
+
+    public bool IsReversed
+    {
+        get;
+        set;
+    } = false;
 
 
     public void StartGame()
@@ -25,6 +64,7 @@ public class Uno
         {
             player.TakeCards(DeckOfCards.ReturnSevenCards());
         }
+
         DiscardStack = new DiscardStack(new List<Card>());
         var firstCard = DeckOfCards.ReturnOneCard();
         if (firstCard != null)
@@ -44,7 +84,7 @@ public class Uno
 
         var rules = new GameRules();
 
-        bool canPlay = rules.CanPlay(playedCard, topCard);
+        bool canPlay = rules.CanPlay(playedCard, topCard, CurrentColor);
 
         if (!canPlay)
         {
@@ -80,6 +120,7 @@ public class Uno
         {
             return;
         }
+
         Console.WriteLine($"Top card: {topCard.Color} {topCard.NumberOfCard}");
     }
 
@@ -90,7 +131,12 @@ public class Uno
         {
             var card = player.Cards[i];
 
-            if (card.SpecialType != null)
+            if (card.SpecialType == SpecialCard.ChangeColor ||
+                card.SpecialType == SpecialCard.ChangeColorPlusFour)
+            {
+                Console.WriteLine($"{i}. {card.SpecialType}");
+            }
+            else if (card.SpecialType != null)
             {
                 Console.WriteLine($"{i}. {card.Color} {card.SpecialType}");
             }
@@ -111,6 +157,7 @@ public class Uno
             {
                 return;
             }
+
             player.TakeCard(card);
         }
     }
@@ -131,14 +178,28 @@ public class Uno
                     player.TakeCard(newCard);
                     Console.WriteLine($"Your cnew card : {newCard.Color} {newCard.NumberOfCard}");
                 }
+
                 continue;
             }
+
             var card = player.Cards[index];
             played = PlayTurn(player, card);
 
             if (!played)
             {
                 Console.WriteLine("Wrong card you would like to play:");
+            }
+            else
+            {
+                if (card.SpecialType == SpecialCard.ChangeColor || card.SpecialType == SpecialCard.ChangeColorPlusFour)
+                {
+                    CurrentColor = ChooseColor();
+                    Console.WriteLine($"Color changed to {CurrentColor}");
+                }
+                else
+                {
+                    CurrentColor = card.Color;
+                }
             }
         }
     }
@@ -151,132 +212,142 @@ public class Uno
         {
             return;
         }
-        var botCard = bot.ChooseCard(topCard, DeckOfCards);
+
+        var botCard = bot.ChooseCard(topCard, DeckOfCards, CurrentColor);
         if (botCard != null)
         {
             DiscardStack.AddCard(botCard);
-            Console.WriteLine($"Bot put card {botCard.Color} {botCard.NumberOfCard}");
+
+            if (botCard.SpecialType == SpecialCard.ChangeColor ||
+                botCard.SpecialType == SpecialCard.ChangeColorPlusFour)
+            {
+                CurrentColor = (Color) new Random().Next(0, 4);
+                Console.WriteLine($"Bot put card {botCard.SpecialType}");
+                Console.WriteLine($"Bot changed color to {CurrentColor}");
+            }
+            else
+            {
+                CurrentColor = botCard.Color;
+                Console.WriteLine($"Bot put card {botCard.Color} {botCard.NumberOfCard}");
+            }
+
+
         }
         else
         {
             Console.WriteLine("No card played");
         }
     }
+
     private Color ChooseColor()
     {
         Console.WriteLine("Choose color: 0-Red, 1-Green, 2-Blue, 3-Yellow");
-        return (Color)int.Parse(Console.ReadLine());
+        return (Color) int.Parse(Console.ReadLine());
     }
+
 
     public void Run(Player player, Bot bot)
     {
         bool skipNextTurn = false;
+
         while (true)
         {
             ShowTopCard();
-            PersonTurn(player);
 
+            var topCardBeforePerson = DiscardStack.GetTopCard();
 
             if (skipNextTurn)
             {
-                Console.WriteLine("You skipp");
+                Console.WriteLine("Your turn skipped");
                 skipNextTurn = false;
             }
             else
             {
-                var topCard = DiscardStack.GetTopCard();
-
-
-                if (topCard?.SpecialType == SpecialCard.PlusTwo)
-                {
-                    TakeTwoCards(bot.Player, 2);
-                    Console.WriteLine("Bot takes 2 cards");
-                }
-
-                if (topCard?.SpecialType == SpecialCard.SkipTurn)
-                {
-                    skipNextTurn = true;
-                }
-
-                if (topCard?.SpecialType == SpecialCard.ChangeColor ||
-                    topCard?.SpecialType == SpecialCard.ChangeColorPlusFour)
-                {
-                    CurrentColor = ChooseColor();
-                    Console.WriteLine($"Color changed to {CurrentColor}");
-                }
-
-                if (topCard?.SpecialType == SpecialCard.Reverse)
-                {
-                    IsReversed = !IsReversed;
-                    Console.WriteLine("Direction changed!");
-                }
-                if (IsReversed)
-                {
-                    PersonTurn(player);
-                    BotTurn(bot);
-                }
-                else
-                {
-                    BotTurn(bot);
-                    PersonTurn(player);
-                }
-
+                PersonTurn(player);
             }
+
             if (HasWinner(player))
             {
                 Console.WriteLine("Congratulations! You won!");
                 break;
             }
 
-            if (skipNextTurn)
-            {
-                Console.WriteLine("Bot turn skipped");
+            var topCard = DiscardStack.GetTopCard();
 
-                skipNextTurn = false;
-            }
-            else
+            if (topCard != topCardBeforePerson)
             {
-                var topCard = DiscardStack.GetTopCard();
-
                 if (topCard?.SpecialType == SpecialCard.PlusTwo)
                 {
-                    TakeTwoCards(player, 2);
-                    Console.WriteLine("You take 2 cards");
+                    TakeTwoCards(bot.Player, 2);
+                    Console.WriteLine("Bot takes 2 cards");
+                }
+
+                if (topCard?.SpecialType == SpecialCard.ChangeColorPlusFour)
+                {
+                    TakeTwoCards(bot.Player, 4);
+                    Console.WriteLine("Bot takes 4 cards");
+                    skipNextTurn = true;
                 }
 
                 if (topCard?.SpecialType == SpecialCard.SkipTurn)
                 {
                     skipNextTurn = true;
                 }
-                if (topCard?.SpecialType == SpecialCard.ChangeColor ||
-                    topCard?.SpecialType == SpecialCard.ChangeColorPlusFour)
-                {
-                    CurrentColor = ChooseColor();
-                    Console.WriteLine($"Color changed to {CurrentColor}");
-                }
+
                 if (topCard?.SpecialType == SpecialCard.Reverse)
                 {
-                    IsReversed = !IsReversed;
+                    skipNextTurn = true;
                     Console.WriteLine("Direction changed!");
                 }
-                if (IsReversed)
+            }
+
+            if (skipNextTurn)
+            {
+                Console.WriteLine("Bot turn skipped");
+                skipNextTurn = false;
+            }
+            else
+            {
+                var topCardBeforeBot = DiscardStack.GetTopCard();
+                BotTurn(bot);
+                topCard = DiscardStack.GetTopCard();
+
+                if (topCard != topCardBeforeBot)
                 {
-                    PersonTurn(player);
-                    BotTurn(bot);
-                }
-                else
-                {
-                    BotTurn(bot);
-                    PersonTurn(player);
+                    if (topCard?.SpecialType == SpecialCard.PlusTwo)
+                    {
+                        TakeTwoCards(player, 2);
+                        Console.WriteLine("You take 2 cards");
+                    }
+
+                    if (topCard?.SpecialType == SpecialCard.ChangeColorPlusFour)
+                    {
+                        TakeTwoCards(player, 4);
+                        Console.WriteLine("You take 4 cards");
+                        skipNextTurn = true;
+                    }
+                    if (topCard?.SpecialType == SpecialCard.SkipTurn)
+                    {
+                        skipNextTurn = true;
+                    }
+
+                    if (topCard?.SpecialType == SpecialCard.Reverse)
+                    {
+                        skipNextTurn = true;
+                        Console.WriteLine("Direction changed!");
+                    }
                 }
             }
 
             if (HasWinner(bot.Player))
             {
-                Console.WriteLine("Congratulations! You won!");
+                Console.WriteLine("Bot won!");
                 break;
             }
         }
     }
-
 }
+
+
+
+

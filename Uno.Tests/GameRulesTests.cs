@@ -12,7 +12,7 @@ public class GameRulesTests
 
          var playedCard = new Card { Color = Color.Blue, NumberOfCard = 1 };
          var topCard = new Card { Color = Color.Blue, NumberOfCard = 2 };
-         var result = rules.CanPlay(playedCard, topCard);
+         var result = rules.CanPlay(playedCard, topCard, null);
          Assert.True(result);
     }
 
@@ -22,7 +22,7 @@ public class GameRulesTests
         var rules = new GameRules();
         var playedCard = new Card { Color = Color.Blue, NumberOfCard = 1 };
         var topCard = new Card { Color = Color.Red, NumberOfCard = 1 };
-        var result = rules.CanPlay(playedCard, topCard);
+        var result = rules.CanPlay(playedCard, topCard, null);
         Assert.True(result);
     }
 
@@ -32,7 +32,7 @@ public class GameRulesTests
         var rules = new GameRules();
         var playedCard = new Card { Color = Color.Blue, NumberOfCard = 2 };
         var topCard = new Card { Color = Color.Red, NumberOfCard = 1 };
-        var result = rules.CanPlay(playedCard, topCard);
+        var result = rules.CanPlay(playedCard, topCard, null);
         Assert.False(result);
     }
 }

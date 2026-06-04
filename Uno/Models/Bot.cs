@@ -11,12 +11,12 @@ public class Bot
         Player = player;
     }
 
-    public Card? ChooseCard(Card topCard, DeckOfCards deck)
+    public Card? ChooseCard(Card topCard, DeckOfCards deck, Color? currentColor)
     {
         var rules = new GameRules();
         foreach (var card in Player.Cards)
         {
-          bool CanPlay = rules.CanPlay(card, topCard);
+          bool CanPlay = rules.CanPlay(card, topCard, currentColor);
           if (CanPlay)
           {
               Player.PutCard(card);
@@ -30,7 +30,7 @@ public class Bot
             return null;
         }
         Player.TakeCard(newCard);
-        bool CanPlayNew = rules.CanPlay(newCard, topCard);
+        bool CanPlayNew = rules.CanPlay(newCard, topCard, currentColor);
         if (CanPlayNew)
         {
             Player.PutCard(newCard);

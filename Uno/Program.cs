@@ -12,6 +12,7 @@ class Program
         game.Players = new List<Player> { player, botPlayer };
 
         game.StartGame();
+
         game.Run(player, bot);
 
 
