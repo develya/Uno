@@ -116,12 +116,21 @@ public class Uno
     private void ShowTopCard()
     {
         var topCard = DiscardStack.GetTopCard();
-        if (topCard == null)
-        {
-            return;
-        }
+        if (topCard == null) return;
 
-        Console.WriteLine($"Top card: {topCard.Color} {topCard.NumberOfCard}");
+        if (topCard.SpecialType == SpecialCard.ChangeColor ||
+            topCard.SpecialType == SpecialCard.ChangeColorPlusFour)
+        {
+            Console.WriteLine($"Top card: {topCard.SpecialType} (current color: {CurrentColor})");
+        }
+        else if (topCard.SpecialType != null)
+        {
+            Console.WriteLine($"Top card: {topCard.Color} {topCard.SpecialType}");
+        }
+        else
+        {
+            Console.WriteLine($"Top card: {topCard.Color} {topCard.NumberOfCard}");
+        }
     }
 
     private void ShowPlayerCards(Player player)
@@ -169,7 +178,17 @@ public class Uno
         {
             ShowPlayerCards(player);
             Console.WriteLine("Choose the card you would like to play: (-1 - you can take one more card");
-            int index = int.Parse(Console.ReadLine());
+            if (!int.TryParse(Console.ReadLine(), out int index)) 
+            {
+                Console.WriteLine("Invalid input, enter a number:");
+                continue;
+            }
+
+            if (index != -1 && (index < 0 || index >= player.Cards.Count))
+            {
+                Console.WriteLine($"Invalid index. Choose between 0 and {player.Cards.Count - 1}");
+                continue;
+            }
             if (index == -1)
             {
                 var newCard = DeckOfCards.ReturnOneCard();
@@ -246,25 +265,25 @@ public class Uno
     }
 
 
+
     public void Run(Player player, Bot bot)
+{
+    bool skipNextTurn = false;
+
+    while (true)
     {
-        bool skipNextTurn = false;
+        ShowTopCard();
 
-        while (true)
+        var topCardBeforePerson = DiscardStack.GetTopCard();
+
+        if (skipNextTurn)
         {
-            ShowTopCard();
-
-            var topCardBeforePerson = DiscardStack.GetTopCard();
-
-            if (skipNextTurn)
-            {
-                Console.WriteLine("Your turn skipped");
-                skipNextTurn = false;
-            }
-            else
-            {
-                PersonTurn(player);
-            }
+            Console.WriteLine("Your turn skipped");
+            skipNextTurn = false;
+        }
+        else
+        {
+            PersonTurn(player);
 
             if (HasWinner(player))
             {
@@ -310,42 +329,44 @@ public class Uno
             {
                 var topCardBeforeBot = DiscardStack.GetTopCard();
                 BotTurn(bot);
-                topCard = DiscardStack.GetTopCard();
+                var topCardAfterBot = DiscardStack.GetTopCard();
 
-                if (topCard != topCardBeforeBot)
+                if (topCardAfterBot != topCardBeforeBot)
                 {
-                    if (topCard?.SpecialType == SpecialCard.PlusTwo)
+                    if (topCardAfterBot?.SpecialType == SpecialCard.PlusTwo)
                     {
                         TakeTwoCards(player, 2);
                         Console.WriteLine("You take 2 cards");
                     }
 
-                    if (topCard?.SpecialType == SpecialCard.ChangeColorPlusFour)
+                    if (topCardAfterBot?.SpecialType == SpecialCard.ChangeColorPlusFour)
                     {
                         TakeTwoCards(player, 4);
                         Console.WriteLine("You take 4 cards");
                         skipNextTurn = true;
                     }
-                    if (topCard?.SpecialType == SpecialCard.SkipTurn)
+
+                    if (topCardAfterBot?.SpecialType == SpecialCard.SkipTurn)
                     {
                         skipNextTurn = true;
                     }
 
-                    if (topCard?.SpecialType == SpecialCard.Reverse)
+                    if (topCardAfterBot?.SpecialType == SpecialCard.Reverse)
                     {
                         skipNextTurn = true;
                         Console.WriteLine("Direction changed!");
                     }
                 }
-            }
 
-            if (HasWinner(bot.Player))
-            {
-                Console.WriteLine("Bot won!");
-                break;
+                if (HasWinner(bot.Player))
+                {
+                    Console.WriteLine("Bot won!");
+                    break;
+                }
             }
         }
     }
+}
 }
 
 

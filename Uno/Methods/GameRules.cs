@@ -13,7 +13,8 @@ public class GameRules
 
         if (currentColor != null)
         {
-            return playedCard.Color == currentColor || playedCard.NumberOfCard == topCard.NumberOfCard;
+            return playedCard.Color == currentColor ||
+                   (playedCard.SpecialType != null && playedCard.SpecialType == topCard.SpecialType);
         }
 
         var result =  playedCard.Color == topCard.Color || playedCard.NumberOfCard == topCard.NumberOfCard || playedCard.SpecialType == topCard.SpecialType;
