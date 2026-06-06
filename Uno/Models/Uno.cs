@@ -178,7 +178,7 @@ public class Uno
         {
             ShowPlayerCards(player);
             Console.WriteLine("Choose the card you would like to play: (-1 - you can take one more card");
-            if (!int.TryParse(Console.ReadLine(), out int index)) 
+            if (!int.TryParse(Console.ReadLine(), out int index))
             {
                 Console.WriteLine("Invalid input, enter a number:");
                 continue;
