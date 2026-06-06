@@ -2,8 +2,8 @@ namespace Uno.Models;
 
 public enum Color
 {
-    Blue,
-    Green,
     Red,
+    Green,
+    Blue,
     Yellow,
 }

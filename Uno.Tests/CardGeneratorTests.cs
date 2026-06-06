@@ -1,6 +1,7 @@
 using Uno.Methods;
 using Uno.Models;
 
+
 namespace Uno.Tests;
 
 public class CardGeneratorTests
@@ -60,5 +61,14 @@ public class CardGeneratorTests
         var generator = new CardGenerator();
         var cards = generator.GenerateCards();
         Assert.NotEmpty(cards);
+    }
+
+    [Fact]
+    public void Generator_ShouldCreatePlusTwoCards()
+    {
+        var generator = new CardGenerator();
+        var cards = generator.GenerateCards();
+        var plusTwoCards = cards.Count(x => x.SpecialType == SpecialCard.PlusTwo);
+        Assert.Equal(4, plusTwoCards);
     }
 }
